@@ -137,7 +137,7 @@ export default function Home() {
   };
 
   const columns: GridColDef[] = [
-    { field: "date", headerName: "Date (DD/MM/YYYY)", width: 150 },
+    { field: "date", headerName: "Date", width: 150 },
     { field: "time", headerName: "Time", width: 120 },
     { field: "projectName", headerName: "Project", width: 200 },
     { field: "commits", headerName: "Commits", width: 400 },
