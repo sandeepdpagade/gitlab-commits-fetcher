@@ -1,69 +1,71 @@
-# React + TypeScript + Vite
+GitLab Commit History Fetcher
+This is a simple, modern web application built with React, Next.js, and Tailwind CSS that helps you fetch and view your commit history from GitLab. It allows you to filter commits by a specific date range and provides a clean, user-friendly interface to easily copy commit messages and project details.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+✨ Features
+Authentication: Securely use your GitLab private token to fetch your personal commit history.
 
-Currently, two official plugins are available:
+Date Filtering: Use an intuitive date range picker to view commits within a specific timeframe.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Commit Grouping: Commits are automatically grouped by project and date for a clean, consolidated view.
 
-## Expanding the ESLint configuration
+Data Table: A sortable and searchable data grid to easily navigate your commit history.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Copy Functionality: Quickly copy a commit message with its associated project name to your clipboard with a single click.
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Local Storage: Your GitLab username and token are saved in local storage for convenience, so you do not have to enter them every time.
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+🚀 Getting Started
+Follow these instructions to get a copy of the project up and running on your local machine.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Prerequisites
+You will need the following installed on your computer:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Node.js (v14.x or later)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+npm or yarn
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Installation
+Clone the repository:
+
+git clone [https://github.com/](https://github.com/)[Your-Username]/gitlab-commit-history-fetcher.git
+cd gitlab-commit-history-fetcher
+
+Install dependencies:
+
+npm install
+# or
+yarn install
+
+Run the development server:
+
+npm run dev
+# or
+yarn dev
+
+Open http://localhost:3000 in your browser to see the application.
+
+🔑 How to Use
+Generate a Private Token: Go to your GitLab profile settings, navigate to "Access Tokens," and create a new personal access token with the api scope enabled.
+
+Enter your Credentials: On the app's home page, enter your GitLab username and the private token you just created. Click Submit.
+
+Select a Date Range: Use the date picker to select a start and end date for the commits you want to view.
+
+Load Commits: Click the Load Commits button. The application will fetch your commit history and display it in the table below.
+
+Copy Commits: Use the "Copy" button in each row to copy the commit message to your clipboard.
+
+⚙️ Technologies Used
+React - The JavaScript library for building user interfaces.
+
+Next.js - The React framework for production.
+
+TypeScript - For type-safe code.
+
+Tailwind CSS - A utility-first CSS framework for rapid UI development.
+
+Ant Design - A React UI library for the date picker component.
+
+MUI (Material-UI) - For the DataGrid component.
+
+Day.js - A lightweight JavaScript library for parsing and formatting dates.
