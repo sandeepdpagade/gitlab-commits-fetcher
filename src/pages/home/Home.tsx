@@ -217,10 +217,10 @@ export default function Home() {
         </div>
 
         {/* Date Picker and Load Button */}
-        <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col md:flex-row items-center !space-y-4 md:space-y-0 md:!space-x-4">
-          <label className="text-gray-700 font-medium">
+        <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col md:flex-row items-center !space-y-4 md:!space-y-0 md:!space-x-4">
+          <div className="text-gray-700 font-medium ">
             Select Date Range:
-          </label>
+          </div>
           <RangePicker
             onChange={handleDateChange}
             format="DD/MM/YYYY"
