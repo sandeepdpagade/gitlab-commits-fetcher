@@ -137,14 +137,14 @@ export default function Home() {
   };
 
   const columns: GridColDef[] = [
-    { field: "date", headerName: "Date (DD/MM/YYYY)", flex: 1 },
-    { field: "time", headerName: "Time", flex: 1 },
-    { field: "projectName", headerName: "Project", flex: 1.5 },
-    { field: "commits", headerName: "Commits", flex: 3 },
+    { field: "date", headerName: "Date (DD/MM/YYYY)", width: 150 },
+    { field: "time", headerName: "Time", width: 120 },
+    { field: "projectName", headerName: "Project", width: 200 },
+    { field: "commits", headerName: "Commits", width: 400 },
     {
       field: "copy",
       headerName: "Copy",
-      flex: 0.5,
+      width: 100,
       renderCell: (params) => (
         <button
           className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-md px-3 py-1 text-sm font-medium transition-colors"
