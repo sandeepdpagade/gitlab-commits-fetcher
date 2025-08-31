@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import type { GridColDef } from "@mui/x-data-grid";
-import { DatePicker } from "antd";
-import type { RangePickerProps } from "antd/es/date-picker";
-import dayjs from "dayjs";
+
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+
+import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
 dayjs.extend(customParseFormat);
-
-const { RangePicker } = DatePicker;
 
 interface RowData {
   id: number;
@@ -31,8 +32,10 @@ export default function Home() {
   const [rows, setRows] = useState<RowData[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
+    null,
+    null,
+  ]);
 
   useEffect(() => {
     const savedUser = localStorage.getItem("username") || "";
@@ -43,6 +46,7 @@ export default function Home() {
   }, []);
 
   const fetchCommits = async () => {
+    const [startDate, endDate] = dateRange;
     if (!username || !token || !startDate || !endDate) return;
 
     setLoading(true);
@@ -63,7 +67,9 @@ export default function Home() {
         const commitsResp = await fetch(
           `https://gitlab.com/api/v4/projects/${
             project.id
-          }/repository/commits?since=${startDate.toISOString()}&until=${endDate.toISOString()}`,
+          }/repository/commits?since=${startDate
+            .toDate()
+            .toISOString()}&until=${endDate.toDate().toISOString()}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -130,16 +136,6 @@ export default function Home() {
     alert("Copied to clipboard!");
   };
 
-  const handleDateChange: RangePickerProps["onChange"] = (dates) => {
-    if (dates && dates[0] && dates[1]) {
-      setStartDate(dates[0].toDate());
-      setEndDate(dates[1].toDate());
-    } else {
-      setStartDate(null);
-      setEndDate(null);
-    }
-  };
-
   const columns: GridColDef[] = [
     { field: "date", headerName: "Date (DD/MM/YYYY)", flex: 1 },
     { field: "time", headerName: "Time", flex: 1 },
@@ -171,11 +167,11 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main content container with top padding to prevent overlap with the fixed header */}
+      {/* Main content container */}
       <div className="p-6 pt-24 w-full max-w-5xl mx-auto space-y-8">
-        {/* Full-screen loader overlay */}
+        {/* Loader */}
         {loading && (
-          <div className="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-gray-900/80 bg-opacity-70 flex items-center justify-center z-50 h-full">
             <div className="flex flex-col items-center space-y-4">
               <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-500"></div>
               <p className="text-white text-lg font-medium">
@@ -185,7 +181,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* Top Bar - Header Card */}
+        {/* User Input */}
         <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:!space-x-4">
           <h2 className="text-2xl font-bold text-gray-800">
             Hello{" "}
@@ -216,26 +212,32 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Date Picker and Load Button */}
+        {/* Date Picker */}
         <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col md:flex-row items-center !space-y-4 md:!space-y-0 md:!space-x-4">
-          <div className="text-gray-700 font-medium ">
-            Select Date Range:
-          </div>
-          <RangePicker
-            onChange={handleDateChange}
-            format="DD/MM/YYYY"
-            className="w-full md:w-auto ant-range-picker-custom"
-          />
+          <div className="text-gray-700 font-medium">Select Date Range:</div>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateRangePicker
+              value={dateRange}
+              format="DD/MM/YYYY"
+              onChange={(newValue) => setDateRange(newValue)}
+              slotProps={{
+                textField: {
+                  size: "small",
+                  sx: { minWidth: 250, width: "100%", maxWidth: 300 },
+                },
+              }}
+            />
+          </LocalizationProvider>
           <button
             onClick={fetchCommits}
-            disabled={loading || !startDate || !endDate}
+            disabled={loading || !dateRange[0] || !dateRange[1]}
             className="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md px-4 py-2 transition-colors disabled:bg-gray-400"
           >
             Load Commits
           </button>
         </div>
 
-        {/* DataGrid Container */}
+        {/* DataGrid */}
         <div
           className="bg-white rounded-xl shadow-lg p-6"
           style={{ height: 600, width: "100%" }}
