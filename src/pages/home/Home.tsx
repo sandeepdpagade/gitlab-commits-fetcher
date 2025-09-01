@@ -8,6 +8,7 @@ import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { Copy, Check } from "lucide-react"; // Using Lucide React for icons
 
 dayjs.extend(customParseFormat);
 
@@ -24,6 +25,35 @@ const indianDateFormatter = new Intl.DateTimeFormat("en-IN", {
   month: "2-digit",
   year: "numeric",
 });
+
+// A reusable component for the copy icon with state-based feedback.
+const CopyableCell = ({ value, id, field, onCopy }) => {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopyClick = () => {
+    onCopy(value);
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 3000);
+  };
+
+  return (
+    <div className="flex items-center space-x-2 w-full">
+      <button
+        onClick={handleCopyClick}
+        className="flex-shrink-0 p-1 rounded-full hover:bg-gray-200 transition-colors"
+      >
+        {isCopied ? (
+          <Check className="h-4 w-4 text-green-500" />
+        ) : (
+          <Copy className="h-4 w-4" />
+        )}
+      </button>
+      <div className="truncate">{value}</div>
+    </div>
+  );
+};
 
 export default function Home() {
   const [username, setUsername] = useState<string>("");
@@ -130,28 +160,38 @@ export default function Home() {
     fetchCommits();
   };
 
-  const handleCopy = (row: RowData) => {
-    const textToCopy = `${row.projectName}: ${row.commits}`;
-    navigator.clipboard.writeText(textToCopy);
-    alert("Copied to clipboard!");
+  const handleCopy = (text: string) => {
+    // The alert is removed and replaced by the visual feedback in the cell itself.
+    navigator.clipboard.writeText(text);
   };
 
   const columns: GridColDef[] = [
     { field: "date", headerName: "Date", width: 150 },
     { field: "time", headerName: "Time", width: 120 },
-    { field: "projectName", headerName: "Project", width: 200 },
-    { field: "commits", headerName: "Commits", width: 400 },
     {
-      field: "copy",
-      headerName: "Copy",
-      width: 100,
+      field: "projectName",
+      headerName: "Project",
+      width: 200,
       renderCell: (params) => (
-        <button
-          className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-md px-3 py-1 text-sm font-medium transition-colors"
-          onClick={() => handleCopy(params.row as RowData)}
-        >
-          Copy
-        </button>
+        <CopyableCell
+          value={params.value as string}
+          id={params.row.id}
+          field={params.field}
+          onCopy={() => handleCopy(params.value as string)}
+        />
+      ),
+    },
+    {
+      field: "commits",
+      headerName: "Commits",
+      width: 400,
+      renderCell: (params) => (
+        <CopyableCell
+          value={params.value as string}
+          id={params.row.id}
+          field={params.field}
+          onCopy={() => handleCopy(params.value as string)}
+        />
       ),
     },
   ];
@@ -159,7 +199,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       {/* Navbar Header */}
-      <header className="bg-white shadow-md py-4 px-6 fixed  w-full z-10">
+      <header className="bg-white shadow-md py-4 px-6 fixed w-full z-10">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-2xl mx-auto text-center font-bold text-gray-800">
             GitLab Commits Fetcher
