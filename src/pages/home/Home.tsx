@@ -26,8 +26,13 @@ const indianDateFormatter = new Intl.DateTimeFormat("en-IN", {
   year: "numeric",
 });
 
+interface CopyableCellProps {
+  value: string;
+  onCopy: (val: string) => void;
+}
+
 // A reusable component for the copy icon with state-based feedback.
-const CopyableCell = ({ value, id, field, onCopy }) => {
+const CopyableCell: React.FC<CopyableCellProps> = ({ value, onCopy }) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopyClick = () => {
@@ -173,12 +178,7 @@ export default function Home() {
       headerName: "Project",
       width: 200,
       renderCell: (params) => (
-        <CopyableCell
-          value={params.value as string}
-          id={params.row.id}
-          field={params.field}
-          onCopy={() => handleCopy(params.value as string)}
-        />
+        <CopyableCell value={params.value as string} onCopy={handleCopy} />
       ),
     },
     {
@@ -186,12 +186,7 @@ export default function Home() {
       headerName: "Commits",
       width: 400,
       renderCell: (params) => (
-        <CopyableCell
-          value={params.value as string}
-          id={params.row.id}
-          field={params.field}
-          onCopy={() => handleCopy(params.value as string)}
-        />
+        <CopyableCell value={params.value as string} onCopy={handleCopy} />
       ),
     },
   ];
