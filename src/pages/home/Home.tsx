@@ -11,7 +11,7 @@ import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { Copy, Check } from "lucide-react"; // Using Lucide React for icons
+import { Copy, Check, Info } from "lucide-react";
 
 dayjs.extend(customParseFormat);
 
@@ -275,13 +275,37 @@ export default function Home() {
               className="border border-gray-300 rounded-md px-3 py-2 w-full md:w-52 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
             />
 
-            <input
-              type="password"
-              placeholder="Private Token"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 w-full md:w-40 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-            />
+            <div className="relative flex items-center w-full md:w-40">
+              <input
+                type="password"
+                placeholder="Private Token"
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 w-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+              />
+
+              {/* Info Tooltip */}
+              <div className="group absolute right-2 cursor-pointer">
+                <Info className="h-4 w-4 text-gray-500 hover:text-indigo-500" />
+                <div className="absolute  right-0 bottom-0 hidden w-64 group-hover:block bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50">
+                  You can create a Personal Access Token from:
+                  <br />
+                  <strong>User → Edit Profile → Access Tokens</strong>
+                  <br />
+                  or visit:
+                  <br />
+                  <a
+                    href="https://gitlab.com/-/profile/personal_access_tokens"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline text-indigo-300"
+                  >
+                    gitlab.com/-/profile/personal_access_tokens
+                  </a>
+                </div>
+              </div>
+            </div>
+
             <button
               onClick={handleSubmit}
               disabled={loading}
