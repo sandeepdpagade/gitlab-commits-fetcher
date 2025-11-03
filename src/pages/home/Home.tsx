@@ -72,13 +72,13 @@ export default function Home() {
     null,
   ]);
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem("username") || "";
-    const savedToken = localStorage.getItem("token") || "";
-    setStoredUser(savedUser);
-    setUsername(savedUser);
-    setToken(savedToken);
-  }, []);
+  // useEffect(() => {
+  //   const savedUser = localStorage.getItem("username") || "";
+  //   const savedToken = localStorage.getItem("token") || "";
+  //   setStoredUser(savedUser);
+  //   setUsername(savedUser);
+  //   setToken(savedToken);
+  // }, []);
 
   const fetchCommits = async () => {
     const [startDate, endDate] = dateRange;
@@ -159,9 +159,15 @@ export default function Home() {
   };
 
   const handleSubmit = () => {
+    // Clear any old credentials
+    localStorage.removeItem("username");
+    localStorage.removeItem("token");
+
+    // Store new credentials
     localStorage.setItem("username", username);
     localStorage.setItem("token", token);
     setStoredUser(username);
+
     fetchCommits();
   };
 
@@ -243,6 +249,18 @@ export default function Home() {
               className="w-full md:w-auto bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-md px-4 py-2 transition-colors disabled:bg-indigo-300"
             >
               Submit
+            </button>
+            <button
+              onClick={() => {
+                localStorage.clear();
+                setUsername("");
+                setToken("");
+                setStoredUser("");
+                setRows([]);
+              }}
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+            >
+              Clear
             </button>
           </div>
         </div>
