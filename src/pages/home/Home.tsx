@@ -1,6 +1,7 @@
-import { useState,
-  //  useEffect 
-  } from "react";
+import {
+  useState,
+  //  useEffect
+} from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import type { GridColDef } from "@mui/x-data-grid";
 
@@ -68,6 +69,8 @@ export default function Home() {
   const [storedUser, setStoredUser] = useState<string>("");
   const [rows, setRows] = useState<RowData[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState<string>("");
 
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
     null,
@@ -81,10 +84,14 @@ export default function Home() {
   //   setUsername(savedUser);
   //   setToken(savedToken);
   // }, []);
-
   const fetchCommits = async () => {
     const [startDate, endDate] = dateRange;
-    if (!username || !token || !startDate || !endDate) return;
+    setError(null); // clear previous error
+
+    if (!username || !token || !startDate || !endDate) {
+      setError("Please enter username, token, and select a date range.");
+      return;
+    }
 
     setLoading(true);
     try {
@@ -96,6 +103,13 @@ export default function Home() {
           },
         }
       );
+
+      if (!projectsResp.ok) {
+        throw new Error(
+          `GitLab API error: ${projectsResp.status} ${projectsResp.statusText}`
+        );
+      }
+
       const projects = await projectsResp.json();
 
       const allCommits: any[] = [];
@@ -114,17 +128,28 @@ export default function Home() {
           }
         );
 
+        if (!commitsResp.ok) {
+          throw new Error(
+            `Failed to fetch commits for project ${project.name}`
+          );
+        }
+
         const commits = await commitsResp.json();
 
-        commits.forEach((c: any) => {
-          const commitDate = new Date(c.created_at);
-          allCommits.push({
-            date: indianDateFormatter.format(commitDate),
-            time: commitDate.toISOString().split("T")[1].slice(0, 5),
-            projectName: project.name,
-            commit: c.title,
+        commits
+          .filter(
+            (c: any) =>
+              !email || c.author_email?.toLowerCase() === email.toLowerCase()
+          )
+          .forEach((c: any) => {
+            const commitDate = new Date(c.created_at);
+            allCommits.push({
+              date: indianDateFormatter.format(commitDate),
+              time: commitDate.toISOString().split("T")[1].slice(0, 5),
+              projectName: project.name,
+              commit: c.title,
+            });
           });
-        });
       }
 
       const grouped: Record<string, any> = {};
@@ -153,8 +178,9 @@ export default function Home() {
       );
 
       setRows(formattedRows);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error fetching commits", err);
+      setError(err.message || "Unknown error occurred while fetching commits.");
     } finally {
       setLoading(false);
     }
@@ -164,10 +190,13 @@ export default function Home() {
     // Clear any old credentials
     localStorage.removeItem("username");
     localStorage.removeItem("token");
+    localStorage.removeItem("email");
 
     // Store new credentials
     localStorage.setItem("username", username);
     localStorage.setItem("token", token);
+    localStorage.removeItem("email");
+
     setStoredUser(username);
 
     fetchCommits();
@@ -239,6 +268,14 @@ export default function Home() {
               className="border border-gray-300 rounded-md px-3 py-2 w-full md:w-40 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
             />
             <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="border border-gray-300 rounded-md px-3 py-2 w-full md:w-52 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+            />
+
+            <input
               type="password"
               placeholder="Private Token"
               value={token}
@@ -306,6 +343,16 @@ export default function Home() {
           />
         </div>
       </div>
+
+      {error && (
+        <div
+          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+          role="alert"
+        >
+          <strong className="font-bold">Error:</strong>
+          <span className="block sm:inline ml-2">{error}</span>
+        </div>
+      )}
     </div>
   );
 }
