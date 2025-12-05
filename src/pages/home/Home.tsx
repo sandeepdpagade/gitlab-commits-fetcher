@@ -229,7 +229,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div className="min-h-screen bg-gray-100 font-sans">
       {/* Navbar Header */}
       <header className="bg-white shadow-md py-4 px-6 fixed w-full z-10">
         <div className="max-w-7xl mx-auto">
@@ -254,7 +254,7 @@ export default function Home() {
         )}
 
         {/* User Input */}
-        <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:!space-x-4">
+        <div className="bg-white rounded  border border-gray-300 shadow p-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:!space-x-4">
           <h2 className="text-2xl font-bold text-gray-800">
             Hello{" "}
             <span className="text-indigo-600">{storedUser || "Guest"}</span> 👋
@@ -329,7 +329,7 @@ export default function Home() {
         </div>
 
         {/* Date Picker */}
-        <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col md:flex-row items-center !space-y-4 md:!space-y-0 md:!space-x-4">
+        <div className="bg-white rounded border border-gray-300 shadow p-6 flex flex-col md:flex-row items-center !space-y-4 md:!space-y-0 md:!space-x-4">
           <div className="text-gray-700 font-medium">Select Date Range:</div>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateRangePicker
@@ -355,7 +355,7 @@ export default function Home() {
 
         {/* DataGrid */}
         <div
-          className="bg-white rounded-xl shadow-lg p-6"
+          className="bg-white rounded border border-gray-300 shadow p-6"
           style={{ height: 600, width: "100%" }}
         >
           <DataGrid
